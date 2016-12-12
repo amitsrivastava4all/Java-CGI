@@ -1,7 +1,8 @@
 // Class has only one moto
 // S O L I D
 // S - SRP 
-// D - DRY 
+// D - DRY
+// O - Open / Close Principle
 // OOPS - Encapsulation 
 // Good Encapsulation - private variables + public methods
 // Data Hiding
