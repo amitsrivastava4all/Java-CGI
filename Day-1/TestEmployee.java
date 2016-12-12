@@ -1,10 +1,20 @@
+import java.util.Scanner;
 
 public class TestEmployee {
 
 	public static void main(String[] args) {
+		
+		Scanner scanner = new Scanner(System.in);
 		// TODO Auto-generated method stub
 		//object is a instance of a class
-		Employee mike = new Employee(1001,"Mike",9999);
+		System.out.println("Enter the Id");
+		int id = scanner.nextInt();
+		System.out.println("Enter the Name");
+		String name = scanner.next();
+		System.out.println("Enter the Salary");
+		double salary = scanner.nextDouble();
+		Employee mike = new Employee(id,name,salary);
+		scanner.close();
 		//mike = new Employee();
 		mike.print();
 		mike.setSalary(mike.getSalary()+1000);
