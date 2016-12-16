@@ -1,9 +1,23 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Scanner;
 
-class Item{
+class SortByPrice implements Comparator<Item>{
+	public int compare(Item one , Item two){
+		return ((Double)one.getPrice()).compareTo(two.getPrice());
+	}
+}
+class SortByName implements Comparator<Item>{
+	public int compare(Item one , Item two){
+		//return one.getName().compareToIgnoreCase(two.getName());
+		return two.getName().compareToIgnoreCase(one.getName());
+	}
+}
+
+class Item {//implements Comparable<Item>{
 	private int id;
 	private String name;
 	private double price;
@@ -52,7 +66,13 @@ class Item{
 
 class ItemOperation{
 	ArrayList<Item> itemList = new ArrayList<>();
-	 
+	int countByPrice = 0;
+	double sumByPrice = 0;
+	
+	public void updateItem(int index, Item updatedObject){
+		itemList.set(index, updatedObject);
+	}
+	
 	public void addItem(int id , String name , double price){
 		Item item = new Item(id , name, price);
 		itemList.add(item);
@@ -63,9 +83,53 @@ class ItemOperation{
 		//return ;
 	}
 	
+	public void sortByPrice(){
+		//Collections.sort(itemList, new SortByPrice());
+		Collections.sort(itemList,(one,two)->((Double)one.getPrice())
+				.compareTo(two.getPrice()));
+	}
+	
+	public void sortByName(){
+		//Collections.sort(itemList,new SortByName());
+		Collections.sort(itemList,(one,two)->
+		one.getName().compareToIgnoreCase(two.getName()));
+	}
+	
 	public int searchItem(int id , String name){
 		Item searchObject = new Item(id,name,0);
 		return itemList.indexOf(searchObject);
+	}
+	
+	public int count(int price){
+		return (int)itemList.
+		stream()
+		.filter((itemObject)->itemObject.getPrice()>=price)
+		.mapToDouble((y)->y.getPrice()).count();
+		
+//		itemList.forEach((itemObject)->{
+//			if(itemObject.getPrice()>=price){
+//				countByPrice++;
+//			}
+//		});
+//		return countByPrice;
+	}
+	
+public double sum(int price){
+	//return itemList.stream().
+	//filter((itemobject)->itemobject.getPrice()>=price).
+	//mapToDouble((x)->x.getPrice()).sum();
+	
+	return itemList.parallelStream().
+			filter((itemobject)->itemobject.getPrice()>=price).
+			mapToDouble((x)->x.getPrice()).sum();
+	
+	
+//		itemList.forEach((itemObject)->{
+//			if(itemObject.getPrice()>=price){
+//				sumByPrice = sumByPrice + itemObject.getPrice();
+//			}
+//		});
+//		return sumByPrice;
 	}
 	
 	public void printItem(){
@@ -123,6 +187,7 @@ public class ArrayListDemo {
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("Enter the Choice...");
 		int choice = scanner.nextInt();
+		myloop:
 		while(true){
 			switch(choice){
 			case 1:
@@ -153,11 +218,44 @@ public class ArrayListDemo {
 			case 4:
 				itemOper.printItem();
 				break;
+			case 5:	
+				System.out.println("Enter the Id to Search");
+				 id = scanner.nextInt();
+				System.out.println("Enter the Name to Search");
+				name = scanner.next();
+				 index = itemOper.searchItem(id,name);
+				 if(index>=0){
+					 Item item = new Item(1009,"Updated Value",2222);
+					 itemOper.updateItem(index, item);
+					 System.out.println("Updated....");
+				 }
+				 else
+				 {
+					 System.out.println("Not Found...");
+				 }
+				 break;
+			case 6:
+				System.out.println("Count >10000 "+itemOper.count(10000));
+				itemOper.countByPrice=0;
+				break;
+			case 7 :
+				System.out.println("Sum >10000 "+itemOper.sum(10000));
+				itemOper.sumByPrice=0;
+				break;
+			case 8:
+				itemOper.sortByPrice();
+				break;
+			case 9 : 
+				itemOper.sortByName();
+				break;
+			case 10 :
+				System.out.println("Exit....");
+				break myloop;
 			} // switch code ends
 			System.out.println("Enter the Choice...");
 			 choice = scanner.nextInt();
 		} //loop ends
-
+		System.out.println("Good Bye User, Thanks For Using");
 	}
 
 }
